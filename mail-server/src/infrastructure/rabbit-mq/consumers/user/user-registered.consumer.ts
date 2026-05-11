@@ -28,7 +28,7 @@ export class UserRegisteredConsumer implements OnModuleInit {
                 this.logger.log(`Processing registered user: ${data.email}`,);
 
                 await this.userRepo.register(data);
-                await this.emailService.sendUserWelcome(data);
+                // await this.emailService.sendUserWelcome(data);
             },
         );
     }
