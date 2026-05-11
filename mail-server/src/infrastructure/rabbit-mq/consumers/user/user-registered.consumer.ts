@@ -15,7 +15,6 @@ export class UserRegisteredConsumer implements OnModuleInit {
     ) { }
 
     async onModuleInit() {
-        console.log(this.rabbitMQService);
         await this.rabbitMQService.setupExchangeQueueAndBind(
             QueueEnum.USER_QUEUE,
             ExchangeNameEnum.USER_EXCHANGE,

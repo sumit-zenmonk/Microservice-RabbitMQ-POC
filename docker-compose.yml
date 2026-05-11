@@ -44,7 +44,7 @@ services:
     image: postgres:16
     container_name: auth_postgres_db
     restart: always
-    env_file: ./auth-service/.env
+    env_file: ./auth-server/.env
     ports:
       - "5431:5432"
     volumes:
@@ -52,7 +52,7 @@ services:
 
   auth-service-backend:
     build:
-      context: ./auth-service
+      context: ./auth-server
       dockerfile: dockerfile
     ports:
       - "3001:3001"
@@ -60,9 +60,9 @@ services:
       rabbitmq:
         condition: service_healthy 
     command: sh -c "npm run build && npm run start:dev"
-    env_file: ./auth-service/.env
+    env_file: ./auth-server/.env
     volumes:
-      - ./auth-service:/app
+      - ./auth-server:/app
       - /app/node_modules  
 
   mail-service-pgadmin:
@@ -80,7 +80,7 @@ services:
     image: postgres:16
     container_name: mail_postgres_db
     restart: always
-    env_file: ./mail-service/.env
+    env_file: ./mail-server/.env
     ports:
       - "5432:5432"
     volumes:
@@ -88,7 +88,7 @@ services:
 
   mail-service-backend:
     build:
-      context: ./mail-service
+      context: ./mail-server
       dockerfile: dockerfile
     ports:
       - "3002:3002"
@@ -96,9 +96,9 @@ services:
       rabbitmq:
         condition: service_healthy 
     command: sh -c "npm run build && npm run start:dev"
-    env_file: ./mail-service/.env
+    env_file: ./mail-server/.env
     volumes:
-      - ./mail-service:/app
+      - ./mail-server:/app
       - /app/node_modules  
 
 volumes:
