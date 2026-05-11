@@ -101,8 +101,48 @@ services:
       - ./mail-server:/app
       - /app/node_modules  
 
+  user-service-pgadmin:
+    image: dpage/pgadmin4:9.8
+    ports:
+      - 5053:80
+    env_file: ./.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+    -  user_service_pgadmin_data:/var/lib/pgadmin
+
+  user-service-database:
+    image: postgres:16
+    container_name: user_postgres_db
+    restart: always
+    env_file: ./user-server/.env
+    ports:
+      - "5433:5432"
+    volumes:
+      -  user_service_postgres_data:/var/lib/postgresql/data
+
+  user-service-backend:
+    build:
+      context: ./user-server
+      dockerfile: dockerfile
+    ports:
+      - "3003:3003"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy 
+    command: sh -c "npm run build && npm run start:dev"
+    env_file: ./user-server/.env
+    volumes:
+      - ./user-server:/app
+      - /app/node_modules  
+
 volumes:
   auth_service_postgres_data: {}
   auth_service_pgadmin_data: {}
+
   mail_service_postgres_data: {}
   mail_service_pgadmin_data: {}
+
+  user_service_postgres_data: {}
+  user_service_pgadmin_data: {}
