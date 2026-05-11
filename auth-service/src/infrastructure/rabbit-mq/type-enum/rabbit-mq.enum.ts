@@ -10,10 +10,14 @@ export enum XMatchHeaderEnum {
     ANY = 'any'
 }
 
-export enum ExchangeQueueEnum {
-    FANOUT_QUEUE = 'fanout_queue'
+export enum ExchangeNameEnum {
+    USER_EXCHANGE = 'user.exchange',
 }
 
-export enum ExchangeNameEnum {
-    FANOUT_EXCHANGE = 'fanout_queue'
+export enum RoutingKeyEnum {
+    USER_REGISTERED = 'user.registered',
+}
+
+export enum QueueEnum {
+    USER_QUEUE = 'user.queue'
 }

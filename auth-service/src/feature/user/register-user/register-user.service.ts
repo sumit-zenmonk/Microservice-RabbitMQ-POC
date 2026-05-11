@@ -5,7 +5,7 @@ import { JwtHelperService } from "src/infrastructure/services/jwt.service";
 import { RegisterUserDto } from "./register-user.dto";
 import type { Request } from "express";
 import { RabbitMQService } from "src/infrastructure/rabbit-mq/rabbit-mq.service";
-import { ExchangeQueueEnum, ExchangeNameEnum } from "src/infrastructure/rabbit-mq/rabbit-mq.enum";
+import { ExchangeNameEnum, RoutingKeyEnum } from "src/infrastructure/rabbit-mq/type-enum/rabbit-mq.enum";
 
 @Injectable()
 export class RegisterUserService {
@@ -32,7 +32,11 @@ export class RegisterUserService {
         // generate token for accessing resources
         const token = await this.jwtHelperService.generateJwtToken(RegisteredUser);
 
-        await this.rabbitMQService.publishToExchange(ExchangeQueueEnum.FANOUT_QUEUE, ExchangeNameEnum.FANOUT_EXCHANGE, body, req.headers);
+        await this.rabbitMQService.publishToExchange(
+            ExchangeNameEnum.USER_EXCHANGE,
+            RoutingKeyEnum.USER_REGISTERED,
+            RegisteredUser,
+        );
 
         return {
             message: "Registered User",
