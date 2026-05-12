@@ -17,7 +17,7 @@ export const fetchCreators = createAsyncThunk<
     ) => {
         try {
             const token = getState().authReducer.token || ""
-            
+
             const res = await fetch(
                 `${API_URL}/user/creator?offset=${offset}&limit=${limit}`,
                 {
@@ -142,6 +142,42 @@ export const RemoveFollowBondWithCreator = createAsyncThunk<
             if (!res.ok) throw new Error(data.message)
 
             return data
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
+export const fetchFollowers = createAsyncThunk<
+    any,
+    { offset?: number; limit?: number },
+    { state: RootState }
+>(
+    "creator/user/followers",
+    async (
+        { limit = Number(process.env.page_limit) || 10, offset = Number(process.env.page_offset) || 0, },
+        { getState, rejectWithValue }
+    ) => {
+        try {
+            const token = getState().authReducer.token || ""
+
+            const res = await fetch(
+                `${API_URL}/creator/user/follow?offset=${offset}&limit=${limit}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            )
+
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.message)
+
+            return {
+                followers: data.data,
+                total_follower_count: data.totalDocuments,
+            }
         } catch (error: any) {
             return rejectWithValue(error.message)
         }

@@ -13,9 +13,17 @@ export interface FollowingCreator {
     created_at: string
 }
 
+export interface FollowerCreator {
+    uuid: string
+    follower: Creator
+    created_at: string
+}
+
 export interface CreatorState {
     creators: Creator[]
     followings: FollowingCreator[]
+    followers: FollowerCreator[]
+    total_follower_count: number
     total_creator_count: number
     total_following_count: number
     loading: boolean

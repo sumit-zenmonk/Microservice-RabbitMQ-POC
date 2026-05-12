@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { CreatorState } from "./user-type"
-import { fetchCreators, fetchFollowingCreators, MakeFollowBondWithCreator } from "./user-action"
+import { fetchCreators, fetchFollowers, fetchFollowingCreators, MakeFollowBondWithCreator } from "./user-action"
 
 const initialState: CreatorState = {
     creators: [],
     followings: [],
+    followers: [],
+    total_follower_count: 0,
     total_creator_count: 0,
     total_following_count: 0,
     loading: false,
@@ -103,6 +105,39 @@ const creatorSlice = createSlice({
             .addCase(MakeFollowBondWithCreator.fulfilled, (state, action) => {
                 const following_uuid = action.meta.arg.following_uuid;
                 state.creators = state.creators.filter((creator) => creator.uuid !== following_uuid);
+            })
+            .addCase(fetchFollowers.pending, (state) => {
+                state.loading = true
+                state.status = "pending"
+            })
+            .addCase(fetchFollowers.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = "succeed"
+
+                const newFollowers = action.payload.followers
+
+                if (action.meta.arg.offset === 0) {
+                    state.followers = newFollowers
+                } else {
+                    const merged = [...state.followers, ...newFollowers,]
+
+                    state.followers = Array.from(
+                        new Map(
+                            merged.map((item) => [
+                                item.uuid,
+                                item,
+                            ])
+                        ).values()
+                    )
+                }
+
+                state.total_follower_count = action.payload.total_follower_count
+                state.error = null
+            })
+            .addCase(fetchFollowers.rejected, (state, action) => {
+                state.loading = false
+                state.status = "rejected"
+                state.error = action.payload as string
             })
     },
 })
