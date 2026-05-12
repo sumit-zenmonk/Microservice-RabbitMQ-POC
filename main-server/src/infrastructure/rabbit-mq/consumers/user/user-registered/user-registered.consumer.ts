@@ -23,7 +23,7 @@ export class UserRegisteredConsumer implements OnModuleInit {
         await this.rabbitMQService.consumeMessages(
             QueueEnum.MAIN_USER_QUEUE,
             async (data) => {
-                this.logger.log(`Processing registered user: ${data.email}`,);
+                this.logger.log(`Processing registered user: ${data.email} \n ${JSON.stringify(data)}`,);
 
                 await this.userRepo.register(data);
             },

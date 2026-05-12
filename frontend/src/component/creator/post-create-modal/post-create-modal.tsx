@@ -35,7 +35,6 @@ export default function PostFormModal({
                 onClose()
             }
         } catch (err: any) {
-            console.log(err);
             enqueueSnackbar(err, { variant: "error" })
         }
     }

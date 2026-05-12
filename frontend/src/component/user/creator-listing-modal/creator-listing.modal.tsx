@@ -46,7 +46,6 @@ export default function CreatorListingModal({ open, onClose, }: { open: boolean,
 
     const handleFollowCreator = async (following_uuid: string) => {
         try {
-            console.log(user);
             await dispatch(MakeFollowBondWithCreator({ following_uuid, follower_uuid: user?.uuid || "" })).unwrap()
         } catch (err: any) {
             enqueueSnackbar(err, { variant: "error", })
