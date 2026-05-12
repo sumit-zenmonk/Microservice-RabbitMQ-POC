@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { EmailService } from 'src/infrastructure/email/mail.service';
-import { ExchangeNameEnum, ExchangeTypeEnum, QueueEnum, RoutingKeyEnum } from '../../type-enum/rabbit-mq.enum';
-import { RabbitMQService } from '../../rabbit-mq.service';
+import { RabbitMQService } from 'src/infrastructure/rabbit-mq/rabbit-mq.service';
+import { ExchangeNameEnum, ExchangeTypeEnum, QueueEnum, RoutingKeyEnum } from 'src/infrastructure/rabbit-mq/type-enum/rabbit-mq.enum';
 import { UserRepository } from 'src/infrastructure/repository/user.repo';
 
 @Injectable()
