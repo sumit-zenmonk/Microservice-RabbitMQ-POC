@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { CreatorState } from "./user-type"
-import { fetchCreators, fetchFollowingCreators } from "./user-action"
+import { fetchCreators, fetchFollowingCreators, MakeFollowBondWithCreator } from "./user-action"
 
 const initialState: CreatorState = {
     creators: [],
@@ -99,6 +99,10 @@ const creatorSlice = createSlice({
                 state.loading = false
                 state.status = "rejected"
                 state.error = action.payload as string
+            })
+            .addCase(MakeFollowBondWithCreator.fulfilled, (state, action) => {
+                const following_uuid = action.meta.arg.following_uuid;
+                state.creators = state.creators.filter((creator) => creator.uuid !== following_uuid);
             })
     },
 })
