@@ -31,6 +31,7 @@ export class FollowRepository extends Repository<FollowEntity> {
         });
         return follower;
     }
+
     async GetFollowingListing(user_uuid: string, offset?: number, limit?: number) {
         const curr_limit = limit ?? Number(process.env.page_limit) ?? 10;
         const curr_offset = offset ?? Number(process.env.page_offset) ?? 0;
@@ -46,6 +47,38 @@ export class FollowRepository extends Repository<FollowEntity> {
                 uuid: true,
                 created_at: true,
                 following: {
+                    uuid: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    created_at: true
+                }
+            },
+            order: {
+                created_at: "DESC"
+            },
+            skip: curr_offset,
+            take: curr_limit
+        });
+
+        return { data, total };
+    }
+
+    async GetFollowerListing(user_uuid: string, offset?: number, limit?: number) {
+        const curr_limit = limit ?? Number(process.env.page_limit) ?? 10;
+        const curr_offset = offset ?? Number(process.env.page_offset) ?? 0;
+
+        const [data, total] = await this.findAndCount({
+            where: {
+                following_uuid: user_uuid
+            },
+            relations: {
+                follower: true
+            },
+            select: {
+                uuid: true,
+                created_at: true,
+                follower: {
                     uuid: true,
                     name: true,
                     email: true,

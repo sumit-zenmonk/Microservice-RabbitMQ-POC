@@ -34,24 +34,33 @@ export default function HeaderComp() {
 
             <Box className={styles.rightContainer}>
                 {user ? (
-                    user.role === UserRoleEnum.USER && (
-                        <>
+                    <>
+                        {user.role === UserRoleEnum.USER && (
                             <Button
                                 variant="outlined"
-                                onClick={async () => { router.push('/user')}}
+                                onClick={async () => { router.push('/user') }}
                             >
                                 User
                             </Button>
+                        )}
 
+                        {user.role === UserRoleEnum.CREATOR && (
                             <Button
                                 variant="outlined"
-                                sx={{ color: "#DB2D43", borderColor: "#DB2D43" }}
-                                onClick={async () => { await handleLogOut() }}
+                                onClick={async () => { router.push('/creator') }}
                             >
-                                Log Out
+                                creator
                             </Button>
-                        </>
-                    )
+                        )}
+
+                        <Button
+                            variant="outlined"
+                            sx={{ color: "#DB2D43", borderColor: "#DB2D43" }}
+                            onClick={async () => { await handleLogOut() }}
+                        >
+                            Log Out
+                        </Button>
+                    </>
                 ) : (
                     <Button
                         variant="outlined"
