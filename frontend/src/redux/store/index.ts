@@ -3,7 +3,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import authReducer from "../feature/auth/authSlice";
+
+//common reducer
+import authReducer from "../feature/auth/auth-slice";
+
+// user Reducers
+import userReducer from "../feature/user/user-slice";
 
 const persistConfig = {
     key: "root",
@@ -12,6 +17,7 @@ const persistConfig = {
 
 const appReducer = combineReducers({
     authReducer: authReducer,
+    userReducer: userReducer
 });
 
 const rootReducer = (state: any, action: any) => {

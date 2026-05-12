@@ -16,7 +16,6 @@ export default function proxy(req: NextRequest) {
     const isAuthBlock = authBlockRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
     const isAuthenticated = Boolean(credentials);
 
-    console.log(isAuthenticated && isAuthBlock, isPublic, !isAuthenticated && !isPublic);
     if (isAuthenticated && isAuthBlock) {
         return NextResponse.redirect(new URL("/", req.url));
     }

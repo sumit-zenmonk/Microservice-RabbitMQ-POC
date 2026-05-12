@@ -6,7 +6,7 @@ import { AppDispatch } from "@/redux/store"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signupSchema, SignupSchemaType } from "@/schemas/signup"
-import { signupUser } from "@/redux/feature/auth/authAction"
+import { signupUser } from "@/redux/feature/auth/auth-action"
 import { useRouter } from "next/navigation"
 
 import {

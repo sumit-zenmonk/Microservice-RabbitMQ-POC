@@ -1,10 +1,10 @@
-import { RoleEnum } from "@/enums/user.enum"
+import { UserRoleEnum } from "@/enums/user.enum"
 
 export interface User {
   uid: string
   email: string | null
   name: string | null
-  role: RoleEnum
+  role: UserRoleEnum
 }
 
 export interface AuthState {

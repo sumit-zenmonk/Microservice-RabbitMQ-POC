@@ -1,12 +1,12 @@
 "use client"
 
 import { createSlice } from "@reduxjs/toolkit"
-import { AuthState } from "./authtype"
+import { AuthState } from "./auth-type"
 import {
     signupUser,
     loginUser,
     logoutUser,
-} from "./authAction"
+} from "./auth-action"
 import Cookies from 'js-cookie';
 
 const initialState: AuthState = {
