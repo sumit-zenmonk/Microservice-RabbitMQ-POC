@@ -1,24 +1,24 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UserEntity } from "src/domain/user/user.entity";
-import { UserRepository } from "src/infrastructure/repository/user.repo";
+import { FollowRepository } from "src/infrastructure/repository/follow.repo";
 
 @Injectable()
-export class GetCreatorListingService {
+export class GetFollowingListingService {
     constructor(
-        private readonly CreatorRepo: UserRepository,
+        private readonly followRepo: FollowRepository,
     ) { }
 
-    async getCreatorListing(user: UserEntity, offset?: number, limit?: number) {
+    async GetFollowingListing(user: UserEntity, offset?: number, limit?: number) {
         const curr_limit = limit ?? Number(process.env.page_limit) ?? 10;
         const curr_offset = offset ?? Number(process.env.page_offset) ?? 0;
-        const { data, total } = await this.CreatorRepo.getCreatorListing(user.uuid, curr_offset, curr_limit);
+        const { data, total } = await this.followRepo.GetFollowingListing(user.uuid, curr_offset, curr_limit);
 
         return {
             data: data,
             limit: curr_limit,
             offset: curr_offset,
             totalDocuments: total,
-            message: "Creator Listing Success"
+            message: "Following Listing Success"
         }
     }
 }

@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RabbitMQModule } from './infrastructure/rabbit-mq/rabbit-mq.module';
 import { AuthenticateMiddleware } from './infrastructure/middleware/authenticate.middleware';
 import { UserModule } from './feature/user/user.module';
+import { FollowModule } from './feature/follow/follow.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { UserModule } from './feature/user/user.module';
 
     //Modules
     RabbitMQModule,
-    UserModule
+    UserModule,
+    FollowModule
   ],
   controllers: [AppController],
   providers: [AppService, BcryptService, UserRepository, JwtHelperService],

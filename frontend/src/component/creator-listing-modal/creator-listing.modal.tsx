@@ -1,18 +1,19 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Dialog, DialogTitle, DialogContent, Card, CardContent, Typography, Box, Stack, } from "@mui/material"
+import { Dialog, DialogTitle, DialogContent, Card, CardContent, Typography, Box, Stack, Button, } from "@mui/material"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { enqueueSnackbar } from "notistack"
 import { RootState } from "@/redux/store"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks.ts"
 import styles from "./creator-listing.modal.module.css"
-import { fetchCreators } from "@/redux/feature/user/user-action"
+import { fetchCreators, MakeFollowBondWithCreator, RemoveFollowBondWithCreator } from "@/redux/feature/user/user-action"
 import { Creator } from "@/redux/feature/user/user-type"
 
 export default function CreatorListingModal({ open, onClose, }: { open: boolean, onClose: () => void }) {
     const dispatch = useAppDispatch();
     const { creators, total_creator_count } = useAppSelector((state: RootState) => state.userReducer);
+    const { user } = useAppSelector((state: RootState) => state.authReducer);
     const [offset, setOffset] = useState(0);
     const limit = Number(process.env.page_limit) || 10;
 
@@ -43,6 +44,15 @@ export default function CreatorListingModal({ open, onClose, }: { open: boolean,
         }
     }
 
+    const handleFollowCreator = async (following_uuid: string) => {
+        try {
+            console.log(user);
+            await dispatch(MakeFollowBondWithCreator({ following_uuid, follower_uuid: user?.uuid || "" })).unwrap()
+        } catch (err: any) {
+            enqueueSnackbar(err, { variant: "error", })
+        }
+    }
+
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
             <DialogTitle>Creators</DialogTitle>
@@ -59,7 +69,7 @@ export default function CreatorListingModal({ open, onClose, }: { open: boolean,
                         {creators &&
                             creators.map(
                                 (creator: Creator) => (
-                                    <Card key={creator.uuid} className={styles.card}                                    >
+                                    <Card key={creator.uuid} className={styles.card}>
                                         <CardContent className={styles.cardContent}
                                         >
                                             <Box className={styles.header}
@@ -85,6 +95,10 @@ export default function CreatorListingModal({ open, onClose, }: { open: boolean,
                                                     UUID:{" "}{creator.uuid}
                                                 </Typography>
                                             </Box>
+
+                                            <Button className={styles.footer} onClick={async () => await handleFollowCreator(creator.uuid)}>
+                                                Follow
+                                            </Button>
                                         </CardContent>
                                     </Card>
                                 )

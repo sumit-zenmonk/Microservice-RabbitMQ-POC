@@ -45,7 +45,7 @@ export class RegisterUserService {
                 name: RegisteredUser.name,
                 email: RegisteredUser.email,
                 role: RegisteredUser.role,
-                uid: RegisteredUser.uuid,
+                uuid: RegisteredUser.uuid,
             }
         }
     }

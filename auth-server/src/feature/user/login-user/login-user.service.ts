@@ -34,7 +34,7 @@ export class LoginUserService {
                 name: isUserExists[0].name,
                 email: isUserExists[0].email,
                 role: isUserExists[0].role,
-                uid: isUserExists[0].uuid,
+                uuid: isUserExists[0].uuid,
             }
         }
     }
