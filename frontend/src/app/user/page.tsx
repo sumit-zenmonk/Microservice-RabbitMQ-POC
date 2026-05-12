@@ -7,11 +7,13 @@ import { RootState } from "@/redux/store"
 import { Box, Button, Card } from "@mui/material"
 import CreatorListingModal from "@/component/user/creator-listing-modal/creator-listing.modal";
 import FollowingListingModal from "@/component/user/following-listing-modal/following-listing-modal";
+import UserPostListingModal from "@/component/user/user-post-listing-modal/user-post-listing-modal";
 
 export default function UserPage() {
   const { user, loading } = useAppSelector((state: RootState) => state.authReducer);
   const [openCreatorsModal, setOpenCreatorsModal] = useState(false);
   const [openFollowingModal, setOpenFollowingModal] = useState(false);
+  const [openUserFollowingModal, setOpenUserFollowingModal] = useState(false);
 
   if (loading) {
     return <Box className={styles.container}>Loading...</Box>;
@@ -30,6 +32,13 @@ export default function UserPage() {
 
           <Button
             variant="outlined"
+            onClick={() => setOpenUserFollowingModal(true)}
+          >
+            Open following Posts
+          </Button>
+
+          <Button
+            variant="outlined"
             onClick={() => setOpenFollowingModal(true)}
           >
             Open following
@@ -38,6 +47,7 @@ export default function UserPage() {
       </Box>
 
       <CreatorListingModal open={openCreatorsModal} onClose={() => setOpenCreatorsModal(false)} />
+      <UserPostListingModal open={openUserFollowingModal} onClose={() => setOpenUserFollowingModal(false)} />
       <FollowingListingModal open={openFollowingModal} onClose={() => setOpenFollowingModal(false)} />
     </>
   )

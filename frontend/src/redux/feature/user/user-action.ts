@@ -290,3 +290,39 @@ export const deletePost = createAsyncThunk<
         }
     }
 )
+
+export const fetchFollowingCreatorsPosts = createAsyncThunk<
+    any,
+    { offset?: number; limit?: number },
+    { state: RootState }
+>(
+    "user/follow/post/fetch",
+    async (
+        { limit = Number(process.env.page_limit) || 10, offset = Number(process.env.page_offset) || 0, },
+        { getState, rejectWithValue }
+    ) => {
+        try {
+            const token = getState().authReducer.token || ""
+
+            const res = await fetch(
+                `${API_URL}/user/follow/post?offset=${offset}&limit=${limit}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            )
+
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.message)
+
+            return {
+                following_creators_posts: data.data,
+                total_following_posts_count: data.totalDocuments,
+            }
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)

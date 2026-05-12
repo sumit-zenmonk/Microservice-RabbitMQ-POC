@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { CreatorState } from "./user-type"
-import { createPost, deletePost, fetchCreators, fetchFollowers, fetchFollowingCreators, fetchCreatorPosts, MakeFollowBondWithCreator } from "./user-action"
+import { createPost, deletePost, fetchCreators, fetchFollowers, fetchFollowingCreators, fetchCreatorPosts, MakeFollowBondWithCreator, fetchFollowingCreatorsPosts } from "./user-action"
 
 const initialState: CreatorState = {
     creators: [],
     followings: [],
     followers: [],
     posts: [],
+    following_creators_posts: [],
+    total_following_posts_count: 0,
     total_follower_count: 0,
     total_creator_count: 0,
     total_following_count: 0,
@@ -36,7 +38,6 @@ const creatorSlice = createSlice({
                 state.loading = true
                 state.status = "pending"
             })
-
             .addCase(fetchCreators.fulfilled, (state, action) => {
                 state.loading = false
                 state.status = "succeed"
@@ -58,12 +59,9 @@ const creatorSlice = createSlice({
                     )
                 }
 
-                state.total_creator_count =
-                    action.payload.total_creator_count
-
+                state.total_creator_count = action.payload.total_creator_count
                 state.error = null
             })
-
             .addCase(fetchCreators.rejected, (state, action) => {
                 state.loading = false
                 state.status = "rejected"
@@ -94,9 +92,7 @@ const creatorSlice = createSlice({
                     )
                 }
 
-                state.total_following_count =
-                    action.payload.total_following_count
-
+                state.total_following_count = action.payload.total_following_count
                 state.error = null
             })
             .addCase(fetchFollowingCreators.rejected, (state, action) => {
@@ -166,9 +162,7 @@ const creatorSlice = createSlice({
                     )
                 }
 
-                state.total_post_count =
-                    action.payload.total_post_count
-
+                state.total_post_count = action.payload.total_post_count
                 state.error = null
             })
             .addCase(fetchCreatorPosts.rejected, (state, action) => {
@@ -183,14 +177,8 @@ const creatorSlice = createSlice({
             .addCase(createPost.fulfilled, (state, action) => {
                 state.loading = false
                 state.status = "succeed"
-
-                state.posts = [
-                    action.payload,
-                    ...state.posts,
-                ]
-
+                state.posts = [action.payload, ...state.posts,]
                 state.total_post_count += 1
-
                 state.error = null
             })
             .addCase(createPost.rejected, (state, action) => {
@@ -205,16 +193,44 @@ const creatorSlice = createSlice({
             .addCase(deletePost.fulfilled, (state, action) => {
                 state.loading = false
                 state.status = "succeed"
-
-                state.posts = state.posts.filter(
-                    (post) => post.uuid !== action.payload.uuid
-                )
-
+                state.posts = state.posts.filter((post) => post.uuid !== action.payload.uuid)
                 state.total_post_count -= 1
-
                 state.error = null
             })
             .addCase(deletePost.rejected, (state, action) => {
+                state.loading = false
+                state.status = "rejected"
+                state.error = action.payload as string
+            })
+            .addCase(fetchFollowingCreatorsPosts.pending, (state) => {
+                state.loading = true
+                state.status = "pending"
+            })
+            .addCase(fetchFollowingCreatorsPosts.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = "succeed"
+
+                const newPosts = action.payload.following_creators_posts
+
+                if (action.meta.arg.offset === 0) {
+                    state.following_creators_posts = newPosts
+                } else {
+                    const merged = [...state.following_creators_posts, ...newPosts,]
+
+                    state.following_creators_posts = Array.from(
+                        new Map(
+                            merged.map((post) => [
+                                post.uuid,
+                                post,
+                            ])
+                        ).values()
+                    )
+                }
+
+                state.total_following_posts_count = action.payload.total_following_posts_count
+                state.error = null
+            })
+            .addCase(fetchFollowingCreatorsPosts.rejected, (state, action) => {
                 state.loading = false
                 state.status = "rejected"
                 state.error = action.payload as string

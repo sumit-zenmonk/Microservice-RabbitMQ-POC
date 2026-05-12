@@ -29,11 +29,40 @@ export interface Post {
     deleted_at: string | null
 }
 
+export interface Follow {
+    uuid: string
+    follower_uuid: string
+    following_uuid: string
+    created_at: string
+    updated_at: string
+    deleted_at: string | null
+}
+
+export interface FollowingCreatorPost {
+    uuid: string
+    title: string
+    content: string
+    user_uuid: string
+    user: {
+        name: string
+        email: string
+        followers: Follow[]
+        created_at: string
+        updated_at: string
+        deleted_at: string | null
+    }
+    created_at: string
+    updated_at: string
+    deleted_at: string | null
+}
+
 export interface CreatorState {
     creators: Creator[]
     followings: FollowingCreator[]
     followers: FollowerCreator[]
     posts: Post[]
+    following_creators_posts: FollowingCreatorPost[]
+    total_following_posts_count: number
     total_follower_count: number
     total_creator_count: number
     total_following_count: number
