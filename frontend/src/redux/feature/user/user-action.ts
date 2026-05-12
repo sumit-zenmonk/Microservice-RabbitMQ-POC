@@ -183,3 +183,110 @@ export const fetchFollowers = createAsyncThunk<
         }
     }
 )
+
+export const fetchCreatorPosts = createAsyncThunk<
+    any,
+    { offset?: number; limit?: number },
+    { state: RootState }
+>(
+    "creator/post/fetch",
+    async (
+        {
+            limit = Number(process.env.page_limit) || 10,
+            offset = Number(process.env.page_offset) || 0,
+        },
+        { getState, rejectWithValue }
+    ) => {
+        try {
+            const token = getState().authReducer.token || ""
+
+            const res = await fetch(
+                `${API_URL}/creator/post?offset=${offset}&limit=${limit}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            )
+
+            const data = await res.json()
+
+            if (!res.ok) throw new Error(data.message)
+
+            return {
+                posts: data.data,
+                total_post_count: data.totalDocuments,
+            }
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
+export const createPost = createAsyncThunk<
+    any,
+    { title: string; content: string },
+    { state: RootState }
+>(
+    "creator/post/create",
+    async ({ title, content }, { getState, rejectWithValue }) => {
+        try {
+            const token = getState().authReducer.token || ""
+
+            const res = await fetch(`${API_URL}/creator/post`, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title,
+                    content,
+                }),
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) throw new Error(data.message)
+
+            return data.post
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
+export const deletePost = createAsyncThunk<
+    any,
+    { uuid: string },
+    { state: RootState }
+>(
+    "creator/post/delete",
+    async ({ uuid }, { getState, rejectWithValue }) => {
+        try {
+            const token = getState().authReducer.token || ""
+
+            const res = await fetch(
+                `${API_URL}/creator/post/${uuid}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            )
+
+            const data = await res.json()
+
+            if (!res.ok) throw new Error(data.message)
+
+            return {
+                uuid,
+                message: data.message,
+            }
+        } catch (error: any) {
+            return rejectWithValue(error.message)
+        }
+    }
+)

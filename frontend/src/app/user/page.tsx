@@ -5,8 +5,8 @@ import { useAppSelector } from "@/redux/hooks.ts";
 import styles from "./user.module.css"
 import { RootState } from "@/redux/store"
 import { Box, Button, Card } from "@mui/material"
-import CreatorListingModal from "@/component/creator-listing-modal/creator-listing.modal";
-import FollowingListingModal from "@/component/following-listing-modal/following-listing-modal";
+import CreatorListingModal from "@/component/user/creator-listing-modal/creator-listing.modal";
+import FollowingListingModal from "@/component/user/following-listing-modal/following-listing-modal";
 
 export default function UserPage() {
   const { user, loading } = useAppSelector((state: RootState) => state.authReducer);

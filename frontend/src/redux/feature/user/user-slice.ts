@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { CreatorState } from "./user-type"
-import { fetchCreators, fetchFollowers, fetchFollowingCreators, MakeFollowBondWithCreator } from "./user-action"
+import { createPost, deletePost, fetchCreators, fetchFollowers, fetchFollowingCreators, fetchCreatorPosts, MakeFollowBondWithCreator } from "./user-action"
 
 const initialState: CreatorState = {
     creators: [],
     followings: [],
     followers: [],
+    posts: [],
     total_follower_count: 0,
     total_creator_count: 0,
     total_following_count: 0,
+    total_post_count: 0,
     loading: false,
     error: null,
     status: "pending",
@@ -135,6 +137,84 @@ const creatorSlice = createSlice({
                 state.error = null
             })
             .addCase(fetchFollowers.rejected, (state, action) => {
+                state.loading = false
+                state.status = "rejected"
+                state.error = action.payload as string
+            })
+            .addCase(fetchCreatorPosts.pending, (state) => {
+                state.loading = true
+                state.status = "pending"
+            })
+            .addCase(fetchCreatorPosts.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = "succeed"
+
+                const newPosts = action.payload.posts
+
+                if (action.meta.arg.offset === 0) {
+                    state.posts = newPosts
+                } else {
+                    const merged = [...state.posts, ...newPosts]
+
+                    state.posts = Array.from(
+                        new Map(
+                            merged.map((post) => [
+                                post.uuid,
+                                post,
+                            ])
+                        ).values()
+                    )
+                }
+
+                state.total_post_count =
+                    action.payload.total_post_count
+
+                state.error = null
+            })
+            .addCase(fetchCreatorPosts.rejected, (state, action) => {
+                state.loading = false
+                state.status = "rejected"
+                state.error = action.payload as string
+            })
+            .addCase(createPost.pending, (state) => {
+                state.loading = true
+                state.status = "pending"
+            })
+            .addCase(createPost.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = "succeed"
+
+                state.posts = [
+                    action.payload,
+                    ...state.posts,
+                ]
+
+                state.total_post_count += 1
+
+                state.error = null
+            })
+            .addCase(createPost.rejected, (state, action) => {
+                state.loading = false
+                state.status = "rejected"
+                state.error = action.payload as string
+            })
+            .addCase(deletePost.pending, (state) => {
+                state.loading = true
+                state.status = "pending"
+            })
+            .addCase(deletePost.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = "succeed"
+
+                state.posts = state.posts.filter(
+                    (post) => post.uuid !== action.payload.uuid
+                )
+
+                state.total_post_count -= 1
+
+                state.error = null
+            })
+            .addCase(deletePost.rejected, (state, action) => {
                 state.loading = false
                 state.status = "rejected"
                 state.error = action.payload as string
