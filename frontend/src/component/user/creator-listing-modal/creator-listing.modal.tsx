@@ -8,11 +8,11 @@ import { RootState } from "@/redux/store"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks.ts"
 import styles from "./creator-listing.modal.module.css"
 import { fetchCreators, MakeFollowBondWithCreator, RemoveFollowBondWithCreator } from "@/redux/feature/user/user-action"
-import { Creator } from "@/redux/feature/user/user-type"
+import { Creator, FollowingCreator } from "@/redux/feature/user/user-type"
 
 export default function CreatorListingModal({ open, onClose, }: { open: boolean, onClose: () => void }) {
     const dispatch = useAppDispatch();
-    const { creators, total_creator_count } = useAppSelector((state: RootState) => state.userReducer);
+    const { creators, total_creator_count, followings } = useAppSelector((state: RootState) => state.userReducer);
     const { user } = useAppSelector((state: RootState) => state.authReducer);
     const [offset, setOffset] = useState(0);
     const limit = Number(process.env.page_limit) || 10;
@@ -52,6 +52,13 @@ export default function CreatorListingModal({ open, onClose, }: { open: boolean,
         }
     }
 
+    const filteredCreators = creators.filter((creator: Creator) => {
+        return !followings.some(
+            (following: FollowingCreator) =>
+                following.following.uuid === creator.uuid
+        )
+    })
+
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
             <DialogTitle>Creators</DialogTitle>
@@ -65,8 +72,8 @@ export default function CreatorListingModal({ open, onClose, }: { open: boolean,
                     endMessage={<Typography style={{ textAlign: "center", }}>Yay! You have seen it all</Typography>}
                 >
                     <Stack spacing={2}>
-                        {creators &&
-                            creators.map(
+                        {filteredCreators &&
+                            filteredCreators.map(
                                 (creator: Creator) => (
                                     <Card key={creator.uuid} className={styles.card}>
                                         <CardContent className={styles.cardContent}
