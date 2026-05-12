@@ -19,5 +19,5 @@ export enum RoutingKeyEnum {
 }
 
 export enum QueueEnum {
-    USER_QUEUE = 'user.queue'
+    MAIN_USER_QUEUE = 'main.user.queue',
 }

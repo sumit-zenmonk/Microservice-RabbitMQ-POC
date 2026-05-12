@@ -19,5 +19,5 @@ export enum RoutingKeyEnum {
 }
 
 export enum QueueEnum {
-    USER_QUEUE = 'user.queue'
+    MAIL_USER_QUEUE = 'mail.user.queue',
 }
