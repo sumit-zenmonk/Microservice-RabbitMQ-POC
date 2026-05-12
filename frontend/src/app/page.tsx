@@ -19,7 +19,9 @@ export default function Home() {
           variant="contained"
           className={styles.logoutBtn}
         >
+          {user?.name}
           {user?.email}
+          {user?.role}
         </Button>
       </Card>
     </Box>

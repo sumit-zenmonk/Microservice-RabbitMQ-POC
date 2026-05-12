@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ExchangeNameEnum, ExchangeTypeEnum, QueueEnum, RoutingKeyEnum } from '../../type-enum/rabbit-mq.enum';
 import { RabbitMQService } from '../../rabbit-mq.service';
-import { UserRepository } from 'src/infrastructure/repository/user.repo';
+import { UserRepository } from '../../../repository/user.repo';
 
 @Injectable()
 export class UserRegisteredConsumer implements OnModuleInit {

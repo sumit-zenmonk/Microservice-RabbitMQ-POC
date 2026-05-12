@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { UserEntity } from "src/domain/user/user.entity";
+import { UserRoleEnum } from "src/domain/user/user.enum";
 import { DataSource, Not, Repository } from "typeorm";
 
 @Injectable()
@@ -48,6 +49,13 @@ export class UserRepository extends Repository<UserEntity> {
         const [data, total] = await this.findAndCount({
             where: {
                 uuid: Not(user_uuid),
+                role: UserRoleEnum.CREATOR
+            },
+            select: {
+                uuid: true,
+                name: true,
+                email: true,
+                role: true
             },
             order: {
                 id: "DESC",

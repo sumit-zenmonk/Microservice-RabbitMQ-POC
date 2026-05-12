@@ -1,5 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserRoleEnum } from "./user.enum";
+import { PostEntity } from "../post/post.entity";
+import { FollowEntity } from "../follow/follow.entity";
 
 @Entity('user')
 export class UserEntity {
@@ -29,6 +31,15 @@ export class UserEntity {
         default: UserRoleEnum.USER
     })
     role: UserRoleEnum;
+
+    @OneToMany(() => PostEntity, (post) => post.user)
+    posts: PostEntity[];
+
+    @OneToMany(() => FollowEntity, (follow) => follow.follower)
+    following: FollowEntity[];
+
+    @OneToMany(() => FollowEntity, (follow) => follow.following)
+    followers: FollowEntity[];
 
     @CreateDateColumn()
     created_at: Date;

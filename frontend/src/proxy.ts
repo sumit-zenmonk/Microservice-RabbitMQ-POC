@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { UserRoleEnum } from "./enums/user.enum";
 
 const publicRoutes = ['/public', '/login', '/signup'];
 const authBlockRoutes = ['/login', '/signup'];
 
 const userRoutes = ['/user'];
-const companyRoutes = ['/company'];
+const creatorRoutes = ['/creator'];
 
 export default function proxy(req: NextRequest) {
     const credentials = req.cookies.get("token")?.value;
@@ -15,26 +16,26 @@ export default function proxy(req: NextRequest) {
     const isAuthBlock = authBlockRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
     const isAuthenticated = Boolean(credentials);
 
+    console.log(isAuthenticated && isAuthBlock, isPublic, !isAuthenticated && !isPublic);
     if (isAuthenticated && isAuthBlock) {
         return NextResponse.redirect(new URL("/", req.url));
     }
     if (isPublic) {
         return NextResponse.next();
     }
-
     if (!isAuthenticated && !isPublic) {
         return NextResponse.redirect(new URL("/signup", req.url));
     }
 
     const isUserRoute = userRoutes.some(route => pathname.startsWith(route));
-    const isCompanyRoute = companyRoutes.some(route => pathname.startsWith(route));
+    const isCreatorRoute = creatorRoutes.some(route => pathname.startsWith(route));
 
-    if (role === 'user' && isCompanyRoute) {
+    if (role === UserRoleEnum.USER && isCreatorRoute) {
         return NextResponse.redirect(new URL("/user/profile", req.url));
     }
 
-    if (role === 'company' && isUserRoute) {
-        return NextResponse.redirect(new URL("/company/insight", req.url));
+    if (role === UserRoleEnum.CREATOR && isUserRoute) {
+        return NextResponse.redirect(new URL("/creator/insight", req.url));
     }
 
     return NextResponse.next();
