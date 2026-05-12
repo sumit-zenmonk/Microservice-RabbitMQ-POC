@@ -56,6 +56,23 @@ export class PostRepository extends Repository<PostEntity> {
                     followers: true
                 }
             },
+            select: {
+                uuid: true,
+                title: true,
+                content: true,
+                user_uuid: true,
+                created_at: true,
+                updated_at: true,
+                deleted_at: true,
+                user: {
+                    name: true,
+                    email: true,
+                    created_at: true,
+                    updated_at: true,
+                    deleted_at: true,
+                    followers: false
+                }
+            },
             order: {
                 created_at: "DESC",
             },
