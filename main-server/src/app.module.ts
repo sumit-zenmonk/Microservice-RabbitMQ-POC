@@ -12,6 +12,7 @@ import { RabbitMQModule } from './infrastructure/rabbit-mq/rabbit-mq.module';
 import { AuthenticateMiddleware } from './infrastructure/middleware/authenticate.middleware';
 import { UserModule } from './feature/user/user.module';
 import { FollowModule } from './feature/follow/follow.module';
+import { PostModule } from './feature/post/post.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { FollowModule } from './feature/follow/follow.module';
     //Modules
     RabbitMQModule,
     UserModule,
-    FollowModule
+    FollowModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService, BcryptService, UserRepository, JwtHelperService],

@@ -1,0 +1,69 @@
+import { Injectable } from "@nestjs/common";
+import { PostEntity } from "src/domain/post/post.entity";
+import { UserRoleEnum } from "src/domain/user/user.enum";
+import { DataSource, Not, Repository } from "typeorm";
+
+@Injectable()
+export class PostRepository extends Repository<PostEntity> {
+    constructor(private readonly dataSource: DataSource) {
+        super(PostEntity, dataSource.createEntityManager());
+    }
+
+    async createPost(body: Partial<PostEntity>) {
+        const post = this.create(body);
+        return await this.save(post);
+    }
+
+    async findByUuid(uuid: string) {
+        const user = await this.findOne({
+            where: {
+                uuid: uuid
+            }
+        });
+        return user;
+    }
+
+    async deletePost(uuid: string) {
+        return await this.softDelete({ uuid });
+    }
+
+    async getCreatorPostListing(user_uuid: string, offset?: number, limit?: number) {
+        const [data, total] = await this.findAndCount({
+            where: {
+                user_uuid
+            },
+            order: {
+                id: "DESC",
+            },
+            skip: offset || Number(process.env.page_offset) || 0,
+            take: limit || Number(process.env.page_limit) || 10
+        });
+
+        return { data, total };
+    }
+
+    async getUserPostListing(user_uuid: string, offset?: number, limit?: number) {
+        const [data, total] = await this.findAndCount({
+            where: {
+                user: {
+                    followers: {
+                        uuid: user_uuid
+                    }
+                }
+            },
+            relations: {
+                user: {
+                    followers: true,
+                    following: true
+                }
+            },
+            order: {
+                created_at: "DESC",
+            },
+            skip: offset || Number(process.env.page_offset) || 0,
+            take: limit || Number(process.env.page_limit) || 10
+        });
+
+        return { data, total };
+    }
+}
