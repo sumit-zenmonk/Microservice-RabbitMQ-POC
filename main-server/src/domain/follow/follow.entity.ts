@@ -17,14 +17,14 @@ export class FollowEntity {
     @Column({ type: 'uuid', nullable: false })
     follower_uuid: string;
 
-    @ManyToOne(() => UserEntity, (user) => user)
+    @ManyToOne(() => UserEntity, (user) => user.following)
     @JoinColumn({ name: 'follower_uuid' })
     follower: UserEntity;
 
     @Column({ type: 'uuid', nullable: false })
     following_uuid: string;
 
-    @ManyToOne(() => UserEntity, (user) => user)
+    @ManyToOne(() => UserEntity, (user) => user.followers)
     @JoinColumn({ name: 'following_uuid' })
     following: UserEntity;
 

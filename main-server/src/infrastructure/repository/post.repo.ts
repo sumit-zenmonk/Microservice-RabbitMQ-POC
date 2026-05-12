@@ -33,7 +33,7 @@ export class PostRepository extends Repository<PostEntity> {
                 user_uuid
             },
             order: {
-                id: "DESC",
+                created_at: "DESC",
             },
             skip: offset || Number(process.env.page_offset) || 0,
             take: limit || Number(process.env.page_limit) || 10
@@ -47,14 +47,13 @@ export class PostRepository extends Repository<PostEntity> {
             where: {
                 user: {
                     followers: {
-                        uuid: user_uuid
+                        follower_uuid: user_uuid
                     }
                 }
             },
             relations: {
                 user: {
-                    followers: true,
-                    following: true
+                    followers: true
                 }
             },
             order: {
