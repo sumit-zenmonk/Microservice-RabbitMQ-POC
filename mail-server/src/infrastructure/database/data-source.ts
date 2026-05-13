@@ -4,6 +4,7 @@ import 'dotenv/config';
 
 //Entities
 import { UserEntity } from "src/domain/user/user.entity";
+import { FollowEntity } from "src/domain/follow/follow.entity";
 
 const options: DataSourceOptions = {
     type: process.env.DB_POSTGRES_TYPE as any,
@@ -14,6 +15,7 @@ const options: DataSourceOptions = {
     database: process.env.DB_POSTGRES_DATABASE,
     entities: [
         UserEntity,
+        FollowEntity,
     ],
     synchronize: false,
     migrations: ['dist/infrastructure/database/migrations/*{.ts,.js}'],

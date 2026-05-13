@@ -18,6 +18,8 @@ export enum ExchangeNameEnum {
 export enum RoutingKeyEnum {
     USER_REGISTERED = 'user.registered',
     CREATOR_POST_CREATED = 'creator.post.created',
+    FOLLOW_CREATED = 'follow.created',
+    FOLLOW_DELETED = 'follow.deleted',
 }
 
 export enum QueueEnum {

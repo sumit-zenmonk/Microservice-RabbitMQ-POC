@@ -17,4 +17,17 @@ export class EmailService {
             },
         });
     }
+
+    async sendCreatorPostNotification(user: UserEntity, post: any) {
+        await this.mailerService.sendMail({
+            to: user.email,
+            subject: 'New post from creator you follow',
+            html: `
+                <p>Hello ${user.name},</p>
+                <p>A creator you follow created a new post.</p>
+                <h3>${post.title}</h3>
+                <p>${post.content}</p>
+            `,
+        });
+    }
 }

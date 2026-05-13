@@ -4,12 +4,15 @@ import { CreateFollowerOfCreatorDto } from "./create-follower-of-creator.dto";
 import { FollowRepository } from "src/infrastructure/repository/follow.repo";
 import { UserRepository } from "src/infrastructure/repository/user.repo";
 import { UserRoleEnum } from "src/domain/user/user.enum";
+import { RabbitMQService } from "src/infrastructure/rabbit-mq/rabbit-mq.service";
+import { ExchangeNameEnum, RoutingKeyEnum } from "src/infrastructure/rabbit-mq/type-enum/rabbit-mq.enum";
 
 @Injectable()
 export class CreateFollowerOfCreatorService {
     constructor(
         private readonly followRepo: FollowRepository,
-        private readonly userRepo: UserRepository
+        private readonly userRepo: UserRepository,
+        private readonly rabbitMQService: RabbitMQService
     ) { }
 
     async createFollowerOfCreator(user: UserEntity, body: CreateFollowerOfCreatorDto) {
@@ -28,9 +31,16 @@ export class CreateFollowerOfCreatorService {
             throw new BadRequestException("Already Followed Creator");
         }
 
-        await this.followRepo.createFollowerBond(body);
+        const follow = await this.followRepo.createFollowerBond(body);
+
+        await this.rabbitMQService.publishToExchange(
+            ExchangeNameEnum.CREATOR_EXCHANGE,
+            RoutingKeyEnum.FOLLOW_CREATED,
+            follow,
+        );
 
         return {
+            follow: follow,
             message: "Follow Bond created"
         }
     }

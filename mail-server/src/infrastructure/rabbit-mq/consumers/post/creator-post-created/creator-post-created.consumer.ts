@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { EmailService } from 'src/infrastructure/email/mail.service';
 import { RabbitMQService } from 'src/infrastructure/rabbit-mq/rabbit-mq.service';
 import { ExchangeNameEnum, ExchangeTypeEnum, QueueEnum, RoutingKeyEnum } from 'src/infrastructure/rabbit-mq/type-enum/rabbit-mq.enum';
-import { UserRepository } from 'src/infrastructure/repository/user.repo';
+import { FollowRepository } from 'src/infrastructure/repository/follow.repo';
 
 @Injectable()
 export class CreatorPostCreatedConsumer implements OnModuleInit {
@@ -11,7 +11,7 @@ export class CreatorPostCreatedConsumer implements OnModuleInit {
     constructor(
         private readonly rabbitMQService: RabbitMQService,
         private readonly emailService: EmailService,
-        private readonly userRepo: UserRepository,
+        private readonly followRepo: FollowRepository,
     ) { }
 
     async onModuleInit() {
@@ -25,9 +25,12 @@ export class CreatorPostCreatedConsumer implements OnModuleInit {
         await this.rabbitMQService.consumeMessages(
             QueueEnum.MAIL_POST_CREATED_QUEUE,
             async (data) => {
-                this.logger.log(`Processing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creationProcessing creator post creation: ${data}`,);
+                this.logger.log(`Processing creator post creation: ${data.uuid}`);
 
-                // await this.emailService.sendUserWelcome(data);
+                const followers = await this.followRepo.findByFollowingUuid(data.user_uuid);
+                for (const follower of followers) {
+                    await this.emailService.sendCreatorPostNotification(follower.follower, data);
+                }
             },
         );
     }

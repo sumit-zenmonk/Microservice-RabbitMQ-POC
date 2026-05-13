@@ -1,20 +1,30 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UserEntity } from "src/domain/user/user.entity";
 import { FollowRepository } from "src/infrastructure/repository/follow.repo";
+import { RabbitMQService } from "src/infrastructure/rabbit-mq/rabbit-mq.service";
+import { ExchangeNameEnum, RoutingKeyEnum } from "src/infrastructure/rabbit-mq/type-enum/rabbit-mq.enum";
 
 @Injectable()
 export class DeleteFollowerOfCreatorService {
     constructor(
-        private readonly followRepo: FollowRepository
+        private readonly followRepo: FollowRepository,
+        private readonly rabbitMQService: RabbitMQService
     ) { }
 
     async deleteFollowerOfCreatorService(follow_uuid: string, user: UserEntity) {
         const isFollowBondExists = await this.followRepo.findByUuid(follow_uuid);
-        if (!isFollowBondExists) {
+        if (!isFollowBondExists.length) {
             throw new BadRequestException("Follow Bond not found");
         }
 
         await this.followRepo.deleteFollowBond(follow_uuid);
+
+        await this.rabbitMQService.publishToExchange(
+            ExchangeNameEnum.CREATOR_EXCHANGE,
+            RoutingKeyEnum.FOLLOW_DELETED,
+            isFollowBondExists[0],
+        );
+
         return {
             message: "Follow Bond deleted successfully"
         };
