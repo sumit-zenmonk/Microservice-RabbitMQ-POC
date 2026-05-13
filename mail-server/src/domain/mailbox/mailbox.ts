@@ -14,11 +14,15 @@ export class MailBoxEntity {
     })
     id: number;
 
-    @Column({ type: "varchar", nullable: false, unique: true })
+    @Column({ type: "varchar", nullable: false })
     email: string;
 
-    @Column({ type: "text", nullable: false })
-    ejs_code: string;
+    @Column({
+        type: "jsonb",
+        nullable: true,
+        default: () => "'{}'",
+    })
+    body: Record<string, any>;
 
     @Column({
         type: "enum",

@@ -7,10 +7,20 @@ import { CreatorPostCreatedConsumer } from './consumers/post/creator-post-create
 import { FollowRepository } from '../repository/follow.repo';
 import { FollowCreatedConsumer } from './consumers/follow/follow-created/follow-created.consumer';
 import { FollowDeletedConsumer } from './consumers/follow/follow-deleted/follow-deleted.consumer';
+import { MailBoxRepository } from '../repository/mailbox.repo';
 
 @Module({
     imports: [MailModule],
-    providers: [RabbitMQService, UserRepository, FollowRepository, UserRegisteredConsumer, CreatorPostCreatedConsumer, FollowCreatedConsumer, FollowDeletedConsumer,],
+    providers: [
+        RabbitMQService,
+        UserRepository,
+        FollowRepository,
+        UserRegisteredConsumer,
+        CreatorPostCreatedConsumer,
+        FollowCreatedConsumer,
+        FollowDeletedConsumer,
+        MailBoxRepository,
+    ],
     exports: [RabbitMQService],
 })
 export class RabbitMQModule { }

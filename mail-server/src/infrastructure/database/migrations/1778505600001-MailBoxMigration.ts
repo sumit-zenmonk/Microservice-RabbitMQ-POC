@@ -12,8 +12,8 @@ export class MailBoxMigration1778505600001 implements MigrationInterface {
                 columns: [
                     { name: "uuid", type: "uuid", isPrimary: true, generationStrategy: "uuid", default: "uuid_generate_v4()", },
                     { name: "id", type: "bigint", isGenerated: true, generationStrategy: "increment", isUnique: true, isNullable: false, },
-                    { name: "email", type: "varchar", isUnique: true, isNullable: false, },
-                    { name: "ejs_code", type: "text", isNullable: false, },
+                    { name: "email", type: "varchar", isNullable: false, },
+                    { name: "body", type: "jsonb", isNullable: true, default: "'{}'", },
                     { name: "status", type: "mail_status_enum", default: `'pending'`, isNullable: false, },
                     { name: "created_at", type: "timestamp", default: "now()", },
                     { name: "updated_at", type: "timestamp", default: "now()", },
