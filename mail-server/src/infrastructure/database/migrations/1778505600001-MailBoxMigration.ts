@@ -4,7 +4,7 @@ export class MailBoxMigration1778505600001 implements MigrationInterface {
     name = "MailBoxMigration1778505600001";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TYPE "public"."mail_status_enum" AS ENUM('pending', 'sent')`);
+        await queryRunner.query(`CREATE TYPE "public"."mail_status_enum" AS ENUM('pending', 'sent', 'failed')`);
 
         await queryRunner.createTable(
             new Table({

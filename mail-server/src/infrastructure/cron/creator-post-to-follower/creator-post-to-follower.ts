@@ -14,17 +14,26 @@ export class CreatorPostToFollowerCronService {
     private readonly logger = new Logger(CreatorPostToFollowerCronService.name);
 
     // Runs every minute
-    @Cron(CronExpression.EVERY_SECOND)
+    @Cron(CronExpression.EVERY_MINUTE)
     async handleCron() {
         // fetch top 10 pending mail 
         const pendingmails = await this.mailBoxRepo.findTopTenPendingMails();
-        for (const mail of pendingmails) {
-            const mailbox_entry_detail: CreateMailEntryPayload = {
-                email: mail.email,
-                body: mail.body as CreatorPostCreatedMailBody
-            }
-            await this.emailService.sendCreatorPostNotificationToFollower(mailbox_entry_detail);
-            await this.mailBoxRepo.updateStatus(mail.uuid, MailBoxStatusEnum.SENT);
-        }
+        await Promise.all(
+            pendingmails.map(async (mail) => {
+                try {
+                    const mailboxEntry: CreateMailEntryPayload = {
+                        email: mail.email,
+                        body: mail.body as CreatorPostCreatedMailBody,
+                    };
+
+                    await this.emailService.sendCreatorPostNotificationToFollower(mailboxEntry);
+                    await this.mailBoxRepo.updateStatus(mail.uuid, MailBoxStatusEnum.SENT,);
+                } catch (error) {
+                    this.logger.error(`Failed to send mail ${mail.uuid}`,);
+
+                    await this.mailBoxRepo.updateStatus(mail.uuid, MailBoxStatusEnum.FAILED,);
+                }
+            }),
+        );
     }
 }

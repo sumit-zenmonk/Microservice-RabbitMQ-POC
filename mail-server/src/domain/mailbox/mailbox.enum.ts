@@ -1,4 +1,5 @@
 export enum MailBoxStatusEnum {
     PENDING = 'pending',
-    SENT = 'sent'
+    SENT = 'sent',
+    FAILED = 'failed'
 }
