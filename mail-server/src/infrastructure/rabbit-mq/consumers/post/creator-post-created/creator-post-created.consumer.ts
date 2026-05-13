@@ -4,7 +4,7 @@ import { RabbitMQService } from 'src/infrastructure/rabbit-mq/rabbit-mq.service'
 import { ExchangeNameEnum, ExchangeTypeEnum, QueueEnum, RoutingKeyEnum } from 'src/infrastructure/rabbit-mq/type-enum/rabbit-mq.enum';
 import { FollowRepository } from 'src/infrastructure/repository/follow.repo';
 import { MailBoxRepository } from 'src/infrastructure/repository/mailbox.repo';
-import { CreateMailEntryPayload } from 'src/infrastructure/email/template/creator-post-to-follower/mail.type';
+import { CreateMailEntryPayload } from 'src/infrastructure/email/template/creator-post-to-follower/creator_post_to_follower.type';
 
 @Injectable()
 export class CreatorPostCreatedConsumer implements OnModuleInit {
@@ -51,7 +51,6 @@ export class CreatorPostCreatedConsumer implements OnModuleInit {
                                 excerpt: data.content?.slice(0, 150),
                             },
                         },
-
                     }
                     await this.mailBoxRepo.createMailntry(mailbox_entry_detail);
                 }

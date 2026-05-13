@@ -1,7 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from 'src/domain/user/user.entity';
-import { CreateMailEntryPayload } from './template/creator-post-to-follower/mail.type';
+import { CreateMailEntryPayload } from './template/creator-post-to-follower/creator_post_to_follower.type';
+import { MailBoxStatusEnum } from 'src/domain/mailbox/mailbox.enum';
 
 @Injectable()
 export class EmailService {
@@ -20,6 +21,7 @@ export class EmailService {
     }
 
     async sendCreatorPostNotificationToFollower(data: CreateMailEntryPayload) {
+        console.log(data);
         await this.mailerService.sendMail({
             to: data.email,
             subject: 'New post from creator you follow',

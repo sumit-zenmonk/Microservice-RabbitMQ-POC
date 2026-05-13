@@ -22,10 +22,19 @@ export class MailBoxRepository extends Repository<MailBoxEntity> {
             order: {
                 created_at: "DESC",
             },
-            skip: Number(process.env.page_offset) || 0,
-            take: Number(process.env.page_limit) || 10
+            take: Number(process.env.mailsendlimit) || 10
         });
         return mails;
     }
 
+    async updateStatus(uuid: string, status: MailBoxStatusEnum) {
+        return await this.update(
+            {
+                uuid: uuid
+            },
+            {
+                status: status
+            }
+        )
+    }
 }

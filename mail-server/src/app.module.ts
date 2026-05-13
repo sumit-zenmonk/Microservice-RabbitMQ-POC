@@ -11,6 +11,9 @@ import { ConfigModule } from '@nestjs/config';
 import { RabbitMQModule } from './infrastructure/rabbit-mq/rabbit-mq.module';
 import { AuthenticateMiddleware } from './infrastructure/middleware/authenticate.middleware';
 import { MailModule } from './infrastructure/email/mail.module';
+import { CronModule } from './infrastructure/cron/cron.module';
+import { CreatorPostToFollowerCronService } from './infrastructure/cron/creator-post-to-follower/creator-post-to-follower';
+import { MailBoxRepository } from './infrastructure/repository/mailbox.repo';
 
 @Module({
   imports: [
@@ -32,10 +35,11 @@ import { MailModule } from './infrastructure/email/mail.module';
 
     //Modules
     MailModule,
-    RabbitMQModule
+    RabbitMQModule,
+    CronModule
   ],
   controllers: [AppController],
-  providers: [AppService, BcryptService, UserRepository, JwtHelperService],
+  providers: [AppService, BcryptService, UserRepository, JwtHelperService, CreatorPostToFollowerCronService, MailBoxRepository],
 })
 
 export class AppModule implements NestModule {

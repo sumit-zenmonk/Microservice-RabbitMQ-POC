@@ -1,4 +1,4 @@
-interface CreatorPostCreatedMailBody {
+export interface CreatorPostCreatedMailBody {
     type: 'CREATOR_POST_CREATED';
     receiver_name: string;
     creator: {
